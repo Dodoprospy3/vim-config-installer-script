@@ -2,9 +2,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
-NVIM_CONFIG_SOURCE="$DOTFILES_DIR/nvim/.config/nvim"
+NVIM_CONFIG_SOURCE="$HOME/.config/nvim"
 NVIM_CONFIG_TARGET="$HOME/.config/nvim"
 
 BLUE='\033[0;34m'
@@ -40,9 +38,6 @@ install_packages() {
         fzf
         ripgrep
         fd
-        tree-sitter-cli
-        stylua
-        lua-language-server
         clang
         cmake
         make
@@ -50,8 +45,6 @@ install_packages() {
         unzip
         wget
         curl
-        gzip
-        tar
         jdk-openjdk
         gradle
         maven
@@ -74,10 +67,8 @@ install_rust_tools() {
     if check_command cargo; then
         cargo install --locked tree-sitter-cli
         cargo install --locked stylua
-        cargo install --locked bacon
-        cargo install --locked cargo-nextest
-        cargo install --locked taplo-cli
         cargo install --locked rust-analyzer
+        cargo install --locked taplo-cli
     else
         log_warn "Cargo not found, skipping Rust tools"
     fi
@@ -89,26 +80,22 @@ install_node_tools() {
     if check_command npm; then
         npm install -g \
             @vtsls/language-server \
-            @tailwindcss/language-server \
             vscode-langservers-extracted \
+            @tailwindcss/language-server \
             dockerfile-language-server-nodejs \
-            @angular/language-server \
             bash-language-server \
             diagnostic-languageserver \
             eslint_d \
             prettier \
             @prisma/language-server \
-            graphql-language-service-cli \
             yaml-language-server \
             sql-language-server \
             @biomejs/biome \
             @oxlint/language-server \
-            @sqltools/formatter \
             typescript-language-server \
             @vue/language-server \
             svelte-language-server \
-            @astrojs/language-server \
-            @tailwindcss/language-server
+            @astrojs/language-server
     else
         log_warn "npm not found, skipping Node.js tools"
     fi
@@ -119,26 +106,22 @@ install_python_tools() {
     
     if check_command pip; then
         pip install --user --break-system-packages \
-            python-lsp-server \
+            basedpyright \
             ruff \
             black \
             isort \
             mypy \
-            pyright \
             debugpy \
-            pynvim \
-            jedi-language-server
+            pynvim
     elif check_command pip3; then
         pip3 install --user --break-system-packages \
-            python-lsp-server \
+            basedpyright \
             ruff \
             black \
             isort \
             mypy \
-            pyright \
             debugpy \
-            pynvim \
-            jedi-language-server
+            pynvim
     else
         log_warn "pip not found, skipping Python tools"
     fi
@@ -151,11 +134,6 @@ install_go_tools() {
         go install golang.org/x/tools/gopls@latest
         go install github.com/go-delve/delve/cmd/dlv@latest
         go install honnef.co/go/tools/cmd/staticcheck@latest
-        go install github.com/nametake/golangci-lint-langserver@latest
-        go install github.com/cweill/gotests/gotests@latest
-        go install github.com/fatih/gomodifytags@latest
-        go install github.com/josharian/impl@latest
-        go install github.com/haya14busa/goplay/cmd/goplay@latest
     else
         log_warn "Go not found, skipping Go tools"
     fi
@@ -174,21 +152,6 @@ install_java_tools() {
     else
         log_warn "Java not found, skipping Java tools"
     fi
-}
-
-setup_nvim_config() {
-    log_info "Setting up Neovim configuration..."
-    
-    if [[ -d "$NVIM_CONFIG_TARGET" ]] || [[ -L "$NVIM_CONFIG_TARGET" ]]; then
-        local backup_dir="$HOME/.config/nvim.backup.$(date +%Y%m%d_%H%M%S)"
-        mv "$NVIM_CONFIG_TARGET" "$backup_dir"
-        log_info "Backed up existing config to $backup_dir"
-    fi
-    
-    mkdir -p "$(dirname "$NVIM_CONFIG_TARGET")"
-    cp -r "$NVIM_CONFIG_SOURCE" "$NVIM_CONFIG_TARGET"
-    
-    log_success "Neovim configuration linked"
 }
 
 install_nerd_font() {
@@ -217,18 +180,18 @@ bootstrap_nvim() {
     log_success "Neovim bootstrapped"
 }
 
-install_mason_tools() {
-    log_info "Installing Mason tools (LSPs, formatters, debuggers)..."
+install_mason_lsps() {
+    log_info "Installing Mason LSPs (basedpyright, lua_ls, gopls, rust_analyzer, clangd, vtsls, html, cssls, emmet_ls, jsonls, bashls, yamlls)..."
     
-    nvim --headless "+MasonToolsInstall" +qa 2>&1 | tail -30
+    nvim --headless "+MasonInstall basedpyright lua_ls gopls rust_analyzer clangd vtsls html cssls emmet_ls jsonls bashls yamlls" +qa 2>&1 | tail -30
     
-    log_success "Mason tools installed"
+    log_success "Mason LSPs installed"
 }
 
 install_treesitter_parsers() {
     log_info "Installing Tree-sitter parsers..."
     
-    nvim --headless "+TSInstallSync lua vim vimdoc bash python javascript typescript rust go json yaml toml markdown markdown_inline html css scss dockerfile sql regex c cpp java kotlin zig" +qa 2>&1 | tail -20
+    nvim --headless "+TSInstallSync lua vim vimdoc bash python javascript typescript tsx jsx html css json markdown" +qa 2>&1 | tail -20
     
     log_success "Tree-sitter parsers installed"
 }
@@ -252,9 +215,8 @@ main() {
     install_go_tools
     install_java_tools
     install_nerd_font
-    setup_nvim_config
     bootstrap_nvim
-    install_mason_tools
+    install_mason_lsps
     install_treesitter_parsers
     verify_installation
     
