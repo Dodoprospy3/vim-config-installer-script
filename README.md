@@ -1,16 +1,16 @@
 # Neovim Config Installer for Arch Linux
 
-A fully automated build script that installs **everything** needed for a complete AstroNvim v5 setup on Arch Linux.
+A fully automated build script that installs **everything** needed for a complete personal Neovim setup on Arch Linux. Clones your config from GitHub, installs all dependencies, and bootstraps everything so you can code immediately.
 
 ## Features
 
+- ✅ Clones your personal Neovim config from GitHub (`vimpocalypse` repo)
 - ✅ Installs all system packages (neovim, git, nodejs, python, go, rust, java, build tools)
 - ✅ Installs all language tooling via cargo, npm, pip, go (LSPs, formatters, linters, debuggers)
 - ✅ Installs JetBrains Mono Nerd Font
-- ✅ Sets up your AstroNvim configuration
 - ✅ Bootstraps lazy.nvim + all plugins headless
-- ✅ Runs `:MasonToolsInstall` for all LSPs/formatters/debuggers
-- ✅ Installs Tree-sitter parsers for all configured languages
+- ✅ Installs all 13 Mason LSPs (basedpyright, lua_ls, gopls, rust_analyzer, clangd, vtsls, html, cssls, emmet_ls, jsonls, bashls, yamlls)
+- ✅ Installs all 12 Tree-sitter parsers
 - ✅ Runs `:checkhealth` to verify everything works
 
 ## Usage
@@ -32,22 +32,45 @@ bash <(curl -sL https://raw.githubusercontent.com/Dodoprospy3/vim-config-install
 
 ### System Packages (pacman/paru/yay)
 - `neovim`, `git`, `base-devel`, `nodejs`, `npm`, `python`, `python-pip`, `go`, `rust`, `cargo`
-- `lazygit`, `fzf`, `ripgrep`, `fd`, `tree-sitter-cli`, `stylua`, `lua-language-server`
-- `clang`, `cmake`, `make`, `gcc`, `unzip`, `wget`, `curl`, `jdk-openjdk`, `gradle`, `maven`
+- `lazygit`, `fzf`, `ripgrep`, `fd`, `clang`, `cmake`, `make`, `gcc`, `unzip`, `wget`, `curl`
+- `jdk-openjdk`, `gradle`, `maven`
 
-### Language Tooling
-- **Rust**: rust-analyzer, taplo, bacon, cargo-nextest
-- **Node.js**: TypeScript, Vue, Svelte, Astro, Tailwind, ESLint, Prettier, Biome, Oxlint, Docker, Bash, YAML, SQL, GraphQL, Prisma, Angular
-- **Python**: pyright, ruff, black, isort, mypy, debugpy, python-lsp-server, jedi-language-server
-- **Go**: gopls, delve, staticcheck, golangci-lint-langserver, gotests, gomodifytags, impl
+### Language Tooling (installed globally)
+- **Rust**: rust-analyzer, taplo, stylua, tree-sitter-cli
+- **Node.js**: vtsls, typescript-language-server, vue, svelte, astro, tailwindcss, eslint_d, prettier, biome, oxlint, dockerfile, bash, yaml, sql, prisma
+- **Python**: basedpyright, ruff, black, isort, mypy, debugpy
+- **Go**: gopls, delve, staticcheck
 - **Java**: jdtls (Eclipse JDT Language Server)
 
-### Neovim Configuration
-Your AstroNvim v5 config with:
-- AstroNvim core + community packs
-- Custom plugins (kanagawa theme, copilot, markdown-preview, git-conflict, zen-mode, fugitive, silicon, cellular-automaton, minimap, typr, crates.nvim, codex, krust, houdini, tv.nvim, and more)
-- LSP configuration with format-on-save
-- Custom keybindings for all tools
+### Neovim Configuration (cloned from `git@github.com:Dodoprospy3/vimpocalypse.git`)
+Your personal from-scratch config with:
+- **Plugin manager**: lazy.nvim
+- **Completion**: blink.cmp + friendly-snippets
+- **AI**: neocodeium (Codeium)
+- **LSP**: mason.nvim + mason-lspconfig.nvim + nvim-lspconfig (13 servers)
+- **Treesitter**: nvim-treesitter (12 parsers)
+- **UI**: lualine, telescope, harpoon, trouble, gitsigns, undotree
+- **Themes**: rose-pine + custom transparency settings
+- **Keybindings**: Custom leader keys, terminal toggles, Python runner (F5), etc.
+
+### Mason LSPs Installed (13)
+| Language | LSP |
+|----------|-----|
+| Python | basedpyright |
+| Lua | lua_ls |
+| Go | gopls |
+| Rust | rust_analyzer |
+| C/C++ | clangd |
+| TypeScript/JavaScript | vtsls |
+| HTML | html |
+| CSS | cssls |
+| Emmet | emmet_ls |
+| JSON | jsonls |
+| Bash | bashls |
+| YAML | yamlls |
+
+### Tree-sitter Parsers Installed (12)
+lua, vim, vimdoc, bash, python, javascript, typescript, tsx, jsx, html, css, json, markdown
 
 ## After Installation
 
