@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-NVIM_CONFIG_SOURCE="$HOME/.config/nvim"
+NVIM_CONFIG_REPO="git@github.com:Dodoprospy3/vim-voom.git"
 NVIM_CONFIG_TARGET="$HOME/.config/nvim"
 
 BLUE='\033[0;34m'
@@ -18,6 +18,21 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 check_command() {
     command -v "$1" >/dev/null 2>&1
+}
+
+clone_config() {
+    log_info "Cloning Neovim config from $NVIM_CONFIG_REPO..."
+    
+    if [[ -d "$NVIM_CONFIG_TARGET" ]] || [[ -L "$NVIM_CONFIG_TARGET" ]]; then
+        local backup_dir="$HOME/.config/nvim.backup.$(date +%Y%m%d_%H%M%S)"
+        mv "$NVIM_CONFIG_TARGET" "$backup_dir"
+        log_info "Backed up existing config to $backup_dir"
+    fi
+    
+    mkdir -p "$(dirname "$NVIM_CONFIG_TARGET")"
+    git clone "$NVIM_CONFIG_REPO" "$NVIM_CONFIG_TARGET"
+    
+    log_success "Neovim config cloned"
 }
 
 install_packages() {
@@ -206,8 +221,10 @@ verify_installation() {
 
 main() {
     log_info "Starting FULL Neovim configuration setup for Arch Linux"
+    log_info "Config repo: $NVIM_CONFIG_REPO"
     log_info "This will install everything and make Neovim ready to use immediately"
     
+    clone_config
     install_packages
     install_rust_tools
     install_node_tools
