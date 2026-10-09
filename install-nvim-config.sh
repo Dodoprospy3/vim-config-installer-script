@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-NVIM_CONFIG_REPO="git@github.com:Dodoprospy3/vim-voom.git"
+NVIM_CONFIG_REPO="git@github.com:Dodoprospy3/vimpocalypse.git"
 NVIM_CONFIG_TARGET="$HOME/.config/nvim"
 
 BLUE='\033[0;34m'
